@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/gaurav/c/Programming/cpp/echo-link",
+  "command": "/usr/bin/c++  -I/usr/include/opus -I/home/gaurav/c/Programming/cpp/echo-link/include -std=gnu++17 -o CMakeFiles/echo-link.dir/src/main.cc.o -c /home/gaurav/c/Programming/cpp/echo-link/src/main.cc",
+  "file": "/home/gaurav/c/Programming/cpp/echo-link/src/main.cc",
+  "output": "CMakeFiles/echo-link.dir/src/main.cc.o"
+},
+{
+  "directory": "/home/gaurav/c/Programming/cpp/echo-link",
+  "command": "/usr/bin/c++  -I/usr/include/opus -I/home/gaurav/c/Programming/cpp/echo-link/include -std=gnu++17 -o CMakeFiles/echo-link.dir/src/network_manager.cc.o -c /home/gaurav/c/Programming/cpp/echo-link/src/network_manager.cc",
+  "file": "/home/gaurav/c/Programming/cpp/echo-link/src/network_manager.cc",
+  "output": "CMakeFiles/echo-link.dir/src/network_manager.cc.o"
+}
+]
