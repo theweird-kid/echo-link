@@ -1,1 +1,0 @@
-/usr/bin/c++ -Wl,--dependency-file=CMakeFiles/echo-link.dir/link.d "CMakeFiles/echo-link.dir/src/main.cc.o" "CMakeFiles/echo-link.dir/src/network_manager.cc.o" -o echo-link  -lportaudio -lm -lpthread -lasound -lopus

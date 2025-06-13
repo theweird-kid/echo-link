@@ -27,14 +27,16 @@ private:
     int m_SampleRate;
     int m_Channels;
     int m_FrameSize;
-    std::atomic_bool a_IsRunning;
+    std::atomic_bool a_IsRunning = false;
 
+    // Callback function for PortAudio output stream
     static int paOutputCallback(const void* inputBuffer,
         void* outputBuffer,
         unsigned long framesPerBuffer,
         const PaStreamCallbackTimeInfo* timeInfo,
         PaStreamCallbackFlags statusFlags,
-        void* userData);
+        void* userData
+    );
 };
 
 #endif // PORT_AUDIO_PLAYBACK_HPP
