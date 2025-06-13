@@ -3,14 +3,16 @@
 
 #include <opus/opus.h>
 #include <vector>
-#include "./thread_safe_queue.hpp" // Assuming this is in ThreadSafeQueue.h
+#include "./ThreadSafeQueue.hpp"
 
 // Define the type of audio frame we'll be pushing
 // For raw PCM, opus_int16 (short) is common.
 // Let's assume 16-bit stereo for now.
+
 using AudioFrame = std::vector<opus_int16>;
 
-class IAudioSource {
+struct IAudioSource
+{
 public:
     virtual ~IAudioSource() = default; // Virtual destructor for proper polymorphic cleanup
     virtual bool start() = 0;          // Start capturing/reading audio

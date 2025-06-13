@@ -1,4 +1,4 @@
-#include "../include/network_manager.hpp"
+#include "NetworkManager.hpp"
 #include <asio/io_context.hpp>
 #include <thread>
 #include <iostream>

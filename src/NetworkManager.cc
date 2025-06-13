@@ -1,7 +1,6 @@
-#include "../include/network_manager.hpp"
+#include "NetworkManager.hpp"
 #include <asio/system_error.hpp>
 #include <iostream>
-#include <stdexcept>
 
 NetworkManager::NetworkManager(asio::io_context& context) : m_Context(context), m_Socket(context), a_IsRunning(false)
 {}

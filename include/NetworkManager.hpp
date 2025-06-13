@@ -5,7 +5,7 @@
 #include <asio/io_context.hpp>
 #include <vector>
 
-#include "thread_safe_queue.hpp"
+#include "ThreadSafeQueue.hpp"
 
 using NetworkPacket = std::vector<char>;
 
