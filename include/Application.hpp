@@ -6,6 +6,8 @@
 #include "ThreadSafeQueue.hpp"
 #include "interfaces/IAudioPlayback.hpp"
 #include "interfaces/IAudioSource.hpp"
+
+#include <optional>
 #include <asio/io_context.hpp>
 #include <memory>
 
@@ -16,6 +18,7 @@ class Application
 {
 private:
     asio::io_context m_Context;
+    std::optional<asio::executor_work_guard<asio::io_context::executor_type>> m_WorkGuard;   // intial work
 
     // Modules
     std::unique_ptr<IAudioSource> m_AudioSource;

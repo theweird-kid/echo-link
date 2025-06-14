@@ -3,6 +3,7 @@
 #include "PortAudioCapture.hpp"
 #include "PortAudioPlayback.hpp"
 #include "opus_defines.h"
+
 #include <exception>
 #include <iostream>
 #include <memory>
@@ -80,6 +81,8 @@ Application::Application(int sampleRate, int channels, int frameSize, bool netwo
 
     // Initialize Network
     if(b_NetworkEnabled) {
+        m_WorkGuard.emplace(m_Context.get_executor());
+
         m_NetworkManager = std::make_unique<NetworkManager>(m_Context);
         if(!m_NetworkManager->init(localPort)) {
             throw std::runtime_error("Failed to initialize NetworkManager.");
@@ -157,6 +160,9 @@ void Application::stop() {
 
     if (b_NetworkEnabled && m_NetworkManager) {
         m_NetworkManager->stop();
+        if (m_WorkGuard.has_value()) {
+            m_WorkGuard->reset(); // This signals io_context.run() to stop if no other work is pending
+        }
         m_Context.stop();
     }
 
@@ -208,7 +214,8 @@ void Application::encodingLoop() {
         NetworkPacket packet(opusPacket.data(), opusPacket.data() + encodedBytes);
 
         if (b_NetworkEnabled && m_NetworkManager) {
-            m_NetworkManager->sendPacket(packet);
+            //m_NetworkManager->sendPacket(packet);
+            m_EncodedAudioQueue->push(packet);
         } else {
             m_IncomingNetworkQueue->push(packet);
         }
@@ -253,11 +260,9 @@ void Application::networkSendLoop() {
     std::cout << "[Network Send Thread] Started." << std::endl;
     while (true) {
         NetworkPacket packetToSend;
-        if (!m_EncodedAudioQueue->pop(packetToSend)) {
-            std::cout << "[Network Send Thread] Encoded audio queue shut down. Exiting." << std::endl;
-            break;
+        if (m_EncodedAudioQueue->pop(packetToSend)) {
+            m_NetworkManager->sendPacket(packetToSend);
         }
-        m_NetworkManager->sendPacket(packetToSend);
     }
     std::cout << "[Network Send Thread] Exited." << std::endl;
 }
