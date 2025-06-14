@@ -8,13 +8,7 @@
 PortAudioPlayback::PortAudioPlayback(int sampleRate, int channels, int frameSize)
     : m_SampleRate(sampleRate), m_Channels(channels), m_FrameSize(frameSize)
 {
-    // Initialize PortAudio
-    PaError err = Pa_Initialize();
-    if (err != paNoError)
-    {
-        std::cerr << "PortAudio initialization error: " << Pa_GetErrorText(err) << std::endl;
-        exit(1);
-    }
+    // Initialize PortAudio in the global scope, to avoid multiple initializations
 }
 
 PortAudioPlayback::~PortAudioPlayback()
