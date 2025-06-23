@@ -3,7 +3,7 @@
 #include <string>
 
 int main(int argc, char* argv[]) {
-    // Usage: ./VoiceChatApp <mode> <frame_size_samples> [local_port] [remote_ip] [remote_port]
+    // Usage: ./ech-link <mode> <frame_size_samples> [local_port] [remote_ip] [remote_port]
     // Mode options: --loopback (local mic test), --network (P2P network chat)
 
     if (argc < 3) {

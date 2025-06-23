@@ -214,7 +214,6 @@ void Application::encodingLoop() {
         NetworkPacket packet(opusPacket.data(), opusPacket.data() + encodedBytes);
 
         if (b_NetworkEnabled && m_NetworkManager) {
-            //m_NetworkManager->sendPacket(packet);
             m_EncodedAudioQueue->push(packet);
         } else {
             m_IncomingNetworkQueue->push(packet);
