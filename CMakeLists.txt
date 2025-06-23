@@ -1,75 +1,44 @@
-# CMake configuration for echo-link: UDP-based voice chat app
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.10)
 project(echo-link LANGUAGES CXX)
+
+if(WIN32)
+    message(FATAL_ERROR "echo-link does not currently support building on Windows.")
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Optionally allow static or shared linking
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-
-# Find Asio (Fedora: asio-devel, header-only)
-find_path(ASIO_INCLUDE_DIR asio.hpp
-    PATH_SUFFIXES asio
-    DOC "Path to Asio headers"
-)
-if(NOT ASIO_INCLUDE_DIR)
-    message(FATAL_ERROR "Asio headers not found. Please install asio-devel.")
-endif()
-
-# Find PortAudio (Fedora: portaudio-devel)
+# Find required packages
 find_package(PkgConfig REQUIRED)
+find_package(Threads REQUIRED)
+
+# Find PortAudio
 pkg_check_modules(PORTAUDIO REQUIRED portaudio-2.0)
-if(NOT PORTAUDIO_FOUND)
-    message(FATAL_ERROR "PortAudio not found. Please install portaudio-devel.")
-endif()
+include_directories(${PORTAUDIO_INCLUDE_DIRS})
+link_directories(${PORTAUDIO_LIBRARY_DIRS})
 
-# Find Opus (Fedora: opus-devel)
+# Find Opus
 pkg_check_modules(OPUS REQUIRED opus)
-if(NOT OPUS_FOUND)
-    message(FATAL_ERROR "Opus library not found. Please install opus-devel.")
-endif()
+include_directories(${OPUS_INCLUDE_DIRS})
+link_directories(${OPUS_LIBRARY_DIRS})
 
-# Source files
-file(GLOB_RECURSE SOURCES
-    src/*.cc
-    src/*.cpp
-)
+# Find ASIO (header-only, so just include directory)
+# You may need to set ASIO_INCLUDE_DIR manually if not using Boost
+set(ASIO_INCLUDE_DIR "/usr/include/asio" CACHE PATH "Path to ASIO include directory")
+include_directories(${ASIO_INCLUDE_DIR})
 
-# Header files (optional, for IDEs)
-file(GLOB_RECURSE HEADERS
-    include/*.h
-    include/*.hpp
-)
+# Add source files (adjust as needed)
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cxx" "src/*.cc")
+file(GLOB_RECURSE HEADERS "include/*.hpp" "include/*.h")
 
 add_executable(echo-link ${SOURCES} ${HEADERS})
 
-# Include directories
-target_include_directories(echo-link
-    PRIVATE
-        ${ASIO_INCLUDE_DIR}
-        ${PORTAUDIO_INCLUDE_DIRS}
-        ${OPUS_INCLUDE_DIRS}
-        ${CMAKE_SOURCE_DIR}/include
-)
-
-# Link libraries
+target_include_directories(echo-link PRIVATE include)
 target_link_libraries(echo-link
-    PRIVATE
-        ${PORTAUDIO_LIBRARIES}
-        ${OPUS_LIBRARIES}
+    ${PORTAUDIO_LIBRARIES}
+    ${OPUS_LIBRARIES}
+    Threads::Threads
 )
 
-# Platform-specific settings
-if(WIN32)
-    target_link_libraries(echo-link PRIVATE ws2_32)
-endif()
-
-# Installation
-install(TARGETS echo-link RUNTIME DESTINATION bin)
-
-# Print summary
-message(STATUS "echo-link build configuration:")
-message(STATUS "  ASIO_INCLUDE_DIR: ${ASIO_INCLUDE_DIR}")
-message(STATUS "  PORTAUDIO_INCLUDE_DIRS: ${PORTAUDIO_INCLUDE_DIRS}")
-message(STATUS "  OPUS_INCLUDE_DIRS: ${OPUS_INCLUDE_DIRS}")
+# Optionally, install target
+install(TARGETS echo-link DESTINATION bin)
